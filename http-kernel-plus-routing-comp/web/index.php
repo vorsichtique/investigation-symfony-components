@@ -24,19 +24,51 @@ $routes->add('hello', new Route('/hello/{name}', array(
         })
 ));
 
+dump([
+    'ROUTES AFTER THE FIRST ROUTE WAS ADDED: ',
+    $routes->all()
+]);
+
 $request = Request::createFromGlobals();
+
+dump([
+    'REQUEST FORM GLOBALS: ',
+    $request
+]);
 
 $matcher = new UrlMatcher($routes, new RequestContext());
 
+dump([
+    'URL MATCHER: ',
+    $matcher
+]);
+
 $dispatcher = new EventDispatcher();
+dump([
+    'EVENT DISPATCHER BEFORE ROUTERLISTENER WAS ADDED: ',
+    $dispatcher
+]);
 $dispatcher->addSubscriber(new RouterListener($matcher, new RequestStack()));
+
+dump([
+    'EVENT DISPATCHER AFTER ROUTERLISTENER WAS ADDED: ',
+    $dispatcher
+]);
 
 $controllerResolver = new ControllerResolver();
 $argumentResolver = new ArgumentResolver();
 
 $kernel = new HttpKernel($dispatcher, $controllerResolver, new RequestStack(), $argumentResolver);
+dump([
+    'INITIALIZED KERNEL: ',
+    $kernel
+]);
 
 $response = $kernel->handle($request);
+dump([
+    'RESPONSE FROM REQUEST VIA KERNEL: ',
+    $response
+]);
 $response->send();
 
 $kernel->terminate($request, $response);
